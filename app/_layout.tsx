@@ -11,8 +11,6 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-const htsObject = { color: "#007bff" };
-
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -33,7 +31,7 @@ export default function RootLayout() {
     <Stack>
         <Stack.Screen
           name="index"
-          options={{ title: "Create", headerTitleStyle: htsObject }}
+          options={{ title: "Create" }}
         />
         <Stack.Screen name="+not-found" />
       </Stack>
