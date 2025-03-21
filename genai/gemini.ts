@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-
+import { env } from "@/env";
 // Replace with your actual Gemini API key
-const API_KEY = process.env.EXPO_PUBLIC_GEMINI_KEY;
+const API_KEY = String(env.GEMINI_API_KEY);
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const modelForImageCreation = genAI.getGenerativeModel({
