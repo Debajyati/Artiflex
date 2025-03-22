@@ -23,7 +23,7 @@ export default function DownloadImageButton({
   fileDataURI,
   children,
 }: DownloadImageButtonProps) {
-  const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
+  const [permissionResponse, requestPermission] = MediaLibrary.usePermissions({writeOnly:true});
   const imgFileUri =
     imgDir + `Artiflex_Generated_Image_${fileDataURI.split("/").pop()}`;
 

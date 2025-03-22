@@ -8,7 +8,7 @@ import gemini from "@/genai/gemini";
 import DownloadImageButton from "@/components/DownloadImageButton";
 
 export default function ImageCreateScreen() {
-  let fileURI = "";
+  let [fileURI, setFileURI] = React.useState('');
   const [generatedImage, setGeneratedImage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [prompt, setPrompt] = React.useState("");
@@ -39,7 +39,7 @@ export default function ImageCreateScreen() {
         );
 
       if (imagePart?.fileData?.fileUri) {
-        fileURI = imagePart.fileData.fileUri;
+        setFileURI(imagePart.fileData.fileUri);
       }
 
       if (imagePart?.inlineData?.data) {
