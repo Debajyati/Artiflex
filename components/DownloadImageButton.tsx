@@ -54,7 +54,19 @@ export default function DownloadImageButton({
   }
 
   return (
-    <Pressable style={styles.button} onPress={downloadImage} onPressIn={()=>{Alert.alert('Image started downloading...')}}>
+    <Pressable
+      style={({ pressed }) => [
+        styles.button,
+        {
+          backgroundColor: pressed ? "#9999ff" : "#007bff",
+          elevation: pressed ? 0 : 4,
+        },
+      ]}
+      onPress={downloadImage}
+      onPressIn={() => {
+        Alert.alert("Image started downloading...");
+      }}
+    >
       {children}
     </Pressable>
   );
