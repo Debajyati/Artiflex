@@ -3,13 +3,27 @@ import styles from "@/app/styles";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
-import { Pressable, Image, TextInput, ScrollView, Alert } from "react-native";
+import {
+  Pressable,
+  Image,
+  View,
+  TextInput,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import gemini from "@/genai/gemini";
 import DownloadImageButton from "@/components/DownloadImageButton";
 
 export default function ImageCreateScreen() {
-  let [fileURI, setFileURI] = React.useState('');
+  type Base64Data = {
+    mimeType: string;
+    base64String: string;
+  };
   const [generatedImage, setGeneratedImage] = React.useState("");
+  const [base64ImageData, setBase64ImageData] = React.useState(
+    {} as Base64Data,
+  );
   const [loading, setLoading] = React.useState(false);
   const [prompt, setPrompt] = React.useState("");
   const textRef = React.useRef<TextInput>(null);
@@ -38,15 +52,16 @@ export default function ImageCreateScreen() {
           (part) => part.inlineData,
         );
 
-      if (imagePart?.fileData?.fileUri) {
-        setFileURI(imagePart.fileData.fileUri);
-      }
-
       if (imagePart?.inlineData?.data) {
         const base64Image = imagePart.inlineData.data;
+        const base64ImageContentType = imagePart.inlineData.mimeType;
         setGeneratedImage(
-          `data:${imagePart.inlineData.mimeType};base64,${base64Image}`,
+          `data:${base64ImageContentType};base64,${base64Image}`,
         );
+        setBase64ImageData({
+          base64String: base64Image,
+          mimeType: base64ImageContentType,
+        });
       } else {
         Alert.alert(
           "No image data received",
@@ -84,7 +99,7 @@ export default function ImageCreateScreen() {
         </ThemedText>
       </Pressable>
 
-      {generatedImage && (
+      {generatedImage && !loading ? (
         <ThemedView style={styles.imageContainer}>
           <ThemedText style={styles.imageLabel}>Generated Image:</ThemedText>
           <Image
@@ -92,10 +107,17 @@ export default function ImageCreateScreen() {
             style={styles.image}
             resizeMode="contain"
           />
-          <DownloadImageButton fileDataURI={fileURI}>
+          <DownloadImageButton
+            base64String={base64ImageData.base64String}
+            mimeType={base64ImageData.mimeType}
+          >
             <FontAwesome5 name="download" size={24} color="black" />
           </DownloadImageButton>
         </ThemedView>
+      ) : (
+        <View style={styles.container}>
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>
       )}
     </ScrollView>
   );
