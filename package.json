@@ -14,6 +14,13 @@
   "jest": {
     "preset": "jest-expo"
   },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "listUnknownPackages": "false"
+      }
+    }
+  },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@google/generative-ai": "^0.24.0",
