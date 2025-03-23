@@ -1,6 +1,7 @@
 import * as MediaLibrary from "expo-media-library";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
+import Notifee from "@notifee/react-native";
 import { Pressable, PressableProps, Alert } from "react-native";
 import styles from "@/app/styles";
 
@@ -45,6 +46,11 @@ export default function DownloadImageButton({
         await ensureDirExists(imgDir);
         console.log("Downloading the generated image");
 
+        await Notifee.createChannel({
+          id: 'default',
+          name: 'Default Channel',
+        });
+
         const downloadResumableImage : FileSystem.DownloadResumable = FileSystem.createDownloadResumable(base64URL,imgFileUri);
         const imageDownloadResult = await downloadResumableImage.downloadAsync() as FileSystem.FileSystemDownloadResult;
 
@@ -61,6 +67,15 @@ export default function DownloadImageButton({
         } else {
           await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
         }
+
+        console.log('Image downloaded!');
+        await Notifee.displayNotification({
+          title: 'Download Complete',
+          body: 'Your image has been downloaded successfully!',
+          android: {
+            channelId: 'default',
+          },
+        });
 
         if (await Sharing.isAvailableAsync()) {
           await Sharing.shareAsync(imageDownloadResult.uri);
