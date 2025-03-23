@@ -18,7 +18,7 @@ import DownloadImageButton from "@/components/DownloadImageButton";
 export default function ImageCreateScreen() {
   type Base64Data = {
     mimeType: string;
-    base64String: string;
+    base64URL: string;
   };
   const [generatedImage, setGeneratedImage] = React.useState("");
   const [base64ImageData, setBase64ImageData] = React.useState(
@@ -40,7 +40,6 @@ export default function ImageCreateScreen() {
       );
       return;
     }
-    setLoading(true);
     setGeneratedImage("");
 
     try {
@@ -55,11 +54,10 @@ export default function ImageCreateScreen() {
       if (imagePart?.inlineData?.data) {
         const base64Image = imagePart.inlineData.data;
         const base64ImageContentType = imagePart.inlineData.mimeType;
-        setGeneratedImage(
-          `data:${base64ImageContentType};base64,${base64Image}`,
-        );
+        const base64ImageURL = `data:${base64ImageContentType};base64,${base64Image}`;
+        setGeneratedImage(base64ImageURL);
         setBase64ImageData({
-          base64String: base64Image,
+          base64URL: base64ImageURL,
           mimeType: base64ImageContentType,
         });
       } else {
@@ -93,13 +91,14 @@ export default function ImageCreateScreen() {
         style={styles.button}
         onPress={generateImage}
         disabled={loading}
+        onPressIn={() => setLoading(true)}
       >
         <ThemedText style={styles.buttonText}>
           {loading ? "Generating..." : "Generate Image"}
         </ThemedText>
       </Pressable>
 
-      {generatedImage && !loading ? (
+      {generatedImage ? (
         <ThemedView style={styles.imageContainer}>
           <ThemedText style={styles.imageLabel}>Generated Image:</ThemedText>
           <Image
@@ -108,13 +107,14 @@ export default function ImageCreateScreen() {
             resizeMode="contain"
           />
           <DownloadImageButton
-            base64String={base64ImageData.base64String}
+            base64URL={base64ImageData.base64URL}
             mimeType={base64ImageData.mimeType}
+            onPressEvent={() => Alert.alert('Download started','Check your gallery... :)')}
           >
             <FontAwesome5 name="download" size={24} color="black" />
           </DownloadImageButton>
         </ThemedView>
-      ) : (
+      ) : loading && (
         <View style={styles.container}>
           <ActivityIndicator size="large" color="#00ff00" />
         </View>
