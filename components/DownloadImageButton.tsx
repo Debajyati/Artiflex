@@ -1,9 +1,11 @@
+// DownloadImageButton.tsx
 import * as MediaLibrary from "expo-media-library";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import Notifee from "@notifee/react-native";
 import { Pressable, PressableProps, Alert } from "react-native";
 import styles from "@/app/styles";
+import uuid from 'react-native-uuid'; // Import a UUID generator
 
 async function ensureDirExists(imgDir: string) {
   const dirInfo = await FileSystem.getInfoAsync(imgDir);
@@ -14,7 +16,7 @@ async function ensureDirExists(imgDir: string) {
   }
 }
 
-const imgDir = FileSystem.documentDirectory + "Artiflex/";
+const imgDir = FileSystem.cacheDirectory + "Artiflex/"; // Use cacheDirectory for temporary files
 
 type DownloadImageButtonProps = {
   base64URL: string;
@@ -32,9 +34,9 @@ export default function DownloadImageButton({
   onPressOutEvent
 }: DownloadImageButtonProps) {
   const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
-  const base64Code = base64URL.split(`data:${mimeType};bas64,`)[1];
+  const base64Code = base64URL.split(`data:${mimeType};base64,`)[1];
   const fileExtension = mimeType.split("/")[1];
-  const imgFileUri = `${imgDir}${encodeURIComponent(`Artiflex_Generated_Image_${base64Code}`)}.${fileExtension}`;
+  const tempFilePath = `${imgDir}${uuid.v4()}.${fileExtension}`; // Create a unique temporary file name
 
   async function downloadImage() {
     if (permissionResponse?.status !== "granted") {
@@ -44,23 +46,20 @@ export default function DownloadImageButton({
     if (permissionResponse?.granted) {
       try {
         await ensureDirExists(imgDir);
-        console.log("Downloading the generated image");
+        console.log("Saving base64 image to temporary file...");
+
+        await FileSystem.writeAsStringAsync(tempFilePath, base64Code, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+
+        console.log("Temporary file saved:", tempFilePath);
 
         await Notifee.createChannel({
           id: 'default',
           name: 'Default Channel',
         });
 
-        const downloadResumableImage : FileSystem.DownloadResumable = FileSystem.createDownloadResumable(base64URL,imgFileUri);
-        const imageDownloadResult = await downloadResumableImage.downloadAsync() as FileSystem.FileSystemDownloadResult;
-
-        if (imageDownloadResult.status !== 200) {
-          console.error(`File couldn't be downloaded!`);
-          Alert.alert("File Could not be downloaded","Take a screenshot instead. :(");
-          return;
-        }
-
-        const asset = await MediaLibrary.createAssetAsync(imageDownloadResult.uri);
+        const asset = await MediaLibrary.createAssetAsync(tempFilePath);
         const album = await MediaLibrary.getAlbumAsync('Download');
         if (album == null) {
           await MediaLibrary.createAlbumAsync('Download', asset, false);
@@ -68,7 +67,7 @@ export default function DownloadImageButton({
           await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
         }
 
-        console.log('Image downloaded!');
+        console.log('Image downloaded to media library!');
         await Notifee.displayNotification({
           title: 'Download Complete',
           body: 'Your image has been downloaded successfully!',
@@ -78,16 +77,20 @@ export default function DownloadImageButton({
         });
 
         if (await Sharing.isAvailableAsync()) {
-          await Sharing.shareAsync(imageDownloadResult.uri);
+          await Sharing.shareAsync(asset.uri); // Share the asset URI
           Alert.alert('File is available for sharing','Save to Albums if you need.');
         } else {
           Alert.alert(
             "Your System doesn't support file sharing!",
-            "Check if not downloaded, Take a screenshot instead!\n Sorry :(",
+            "Check your gallery for the downloaded image.\n Sorry :(",
           );
         }
+
+        // Optionally clean up the temporary file
+        FileSystem.deleteAsync(tempFilePath);
+
       } catch (error) {
-        console.error(JSON.stringify(error));
+        console.error("Error downloading image:", error);
         Alert.alert("File Could not be downloaded","Take a screenshot instead. :(");
       }
     }
