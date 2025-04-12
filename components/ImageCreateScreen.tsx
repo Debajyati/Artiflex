@@ -109,7 +109,8 @@ export default function ImageCreateScreen() {
           <DownloadImageButton
             base64URL={base64ImageData.base64URL}
             mimeType={base64ImageData.mimeType}
-            onPressEvent={() => Alert.alert('Download started','Check your gallery... :)')}
+            onDownloadSuccess={() => console.log('Download completed successfully')}
+            onDownloadError={(error) => console.error('Download failed:', error)}
           >
             <FontAwesome5 name="download" size={24} color="black" />
           </DownloadImageButton>
