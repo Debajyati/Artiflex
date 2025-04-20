@@ -16,7 +16,10 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.debajyati.Artiflex"
+      "package": "com.debajyati.Artiflex",
+      "android": {
+      "googleServicesFile": "./google-services.json"
+    }
     },
     "web": {
       "bundler": "metro",
@@ -25,6 +28,16 @@
     },
     "plugins": [
       "expo-router",
+      "@react-native-google-signin/google-signin",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos",
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "storagePermission": "Allow $(PRODUCT_NAME) to access your device storage",
+          "allowBase64": true
+        }
+      ],
       [
         "expo-splash-screen",
         {
