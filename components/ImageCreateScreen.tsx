@@ -11,6 +11,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from "react-native";
 import gemini from "@/genai/gemini";
 import DownloadImageButton from "@/components/DownloadImageButton";
@@ -43,9 +44,7 @@ export default function ImageCreateScreen() {
     setGeneratedImage("");
 
     try {
-      const response = await gemini.googleImageCreationModel.generateContent(
-        `Imagine ${prompt}`,
-      );
+      const response = await gemini.googleImageCreationModel.generateContent(prompt);
       const imagePart =
         response.response?.candidates?.[0]?.content?.parts?.find(
           (part) => part.inlineData,
@@ -70,7 +69,7 @@ export default function ImageCreateScreen() {
       console.error("Error generating image:", error);
       Alert.alert(
         "Error",
-        "Failed to generate image. Try again after sometime",
+        "Failed to generate image. Try again after sometime. Make sure you're connected to internet.",
       );
     } finally {
       setLoading(false);
@@ -80,23 +79,25 @@ export default function ImageCreateScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <ThemedText style={styles.title}>Artiflex Image Generator</ThemedText>
-      <TextInput
-        ref={textRef}
-        style={styles.input}
-        onChangeText={handleInputChange}
-        value={prompt}
-        placeholder="Enter your image prompt"
-      />
-      <Pressable
-        style={styles.button}
-        onPress={generateImage}
-        disabled={loading}
-        onPressIn={() => setLoading(true)}
-      >
-        <ThemedText style={styles.buttonText}>
-          {loading ? "Generating..." : "Generate Image"}
-        </ThemedText>
-      </Pressable>
+      <KeyboardAvoidingView behavior="padding">
+        <TextInput
+          ref={textRef}
+          style={styles.input}
+          onChangeText={handleInputChange}
+          value={prompt}
+          placeholder="Enter your image prompt"
+        />
+        <Pressable
+          style={styles.button}
+          onPress={generateImage}
+          disabled={loading}
+          onPressIn={() => setLoading(true)}
+        >
+          <ThemedText style={styles.buttonText}>
+            {loading ? "Generating..." : "Generate Image"}
+          </ThemedText>
+        </Pressable>
+      </KeyboardAvoidingView>
 
       {generatedImage ? (
         <ThemedView style={styles.imageContainer}>
@@ -109,16 +110,22 @@ export default function ImageCreateScreen() {
           <DownloadImageButton
             base64URL={base64ImageData.base64URL}
             mimeType={base64ImageData.mimeType}
-            onDownloadSuccess={() => console.log('Download completed successfully')}
-            onDownloadError={(error) => console.error('Download failed:', error)}
+            onDownloadSuccess={() =>
+              console.log("Download completed successfully")
+            }
+            onDownloadError={(error) =>
+              console.error("Download failed:", error)
+            }
           >
             <FontAwesome5 name="download" size={24} color="black" />
           </DownloadImageButton>
         </ThemedView>
-      ) : loading && (
-        <View style={styles.container}>
-          <ActivityIndicator size="large" color="#00ff00" />
-        </View>
+      ) : (
+        loading && (
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>
+        )
       )}
     </ScrollView>
   );
