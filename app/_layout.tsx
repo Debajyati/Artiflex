@@ -33,6 +33,10 @@ export default function RootLayout() {
           name="index"
           options={{ title: "Create" }}
         />
+        <Stack.Screen
+          name="profile"
+          options={{ title: "Profile" }}
+        />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
