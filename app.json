@@ -16,10 +16,8 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.debajyati.Artiflex",
-      "android": {
-      "googleServicesFile": "./google-services.json"
-    }
+      "googleServicesFile": "./google-services.json",
+      "package": "com.debajyati.Artiflex"
     },
     "web": {
       "bundler": "metro",
@@ -36,15 +34,6 @@
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
           "storagePermission": "Allow $(PRODUCT_NAME) to access your device storage",
           "allowBase64": true
-        }
-      ],
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
         }
       ],
       "expo-font"
