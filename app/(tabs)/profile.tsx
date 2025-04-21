@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 import { Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import styles from "./styles";
+import styles from "../styles";
 import ThemedText from "@/components/ThemedText";
 
 export default function Profile(): React.JSX.Element {
@@ -25,3 +25,4 @@ export default function Profile(): React.JSX.Element {
     </SafeAreaView>
   );
 }
+
