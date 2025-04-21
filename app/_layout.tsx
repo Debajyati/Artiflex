@@ -51,10 +51,6 @@ export default function RootLayout() {
           name="(tabs)"
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="profile"
-          options={{ presentation: 'modal' }}
-          />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
