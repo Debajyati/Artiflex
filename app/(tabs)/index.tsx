@@ -13,12 +13,17 @@ export default function Index(): React.JSX.Element {
     <SafeAreaView style={styles.container}>
       <ImageBackground
         source={require("@/assets/images/homescreen-background.jpeg")}
+        resizeMode="cover"
         style={{
           flex: 1,
           justifyContent: "center",
         }}
       >
-        <Link href="/profile" style={{ marginTop: 15, paddingVertical: 15 }} asChild>
+        <Link
+          href="/profile"
+          style={{ marginTop: 15, paddingVertical: 15 }}
+          asChild
+        >
           <Pressable
             style={{
               ...styles.button,
@@ -32,24 +37,31 @@ export default function Index(): React.JSX.Element {
           </Pressable>
         </Link>
         <ThemedText type="title">Artiflex</ThemedText>
-        <ThemedText type="subtitle" style={{
-          marginTop: 10,
-        }}>
+        <ThemedText
+          type="subtitle"
+          style={{
+            marginTop: 10,
+          }}
+        >
           A simple image generator app for Android
         </ThemedText>
-        <ThemedText type="defaultSemiBold" style={{
-          margin: 10,
-          padding: 10,
-        }}>
-          Made with <Fontisto name="heart" size={24} color="black" />❤️ by
+        <ThemedText
+          type="defaultSemiBold"
+          style={{
+            margin: 10,
+            padding: 10,
+          }}
+        >
+          Made with <Fontisto name="heart" size={24} color="black" />
+          ❤️ by
           <ExternalLink href="https://github.com/Debajyati">
             {" "}
             Debajyati Dey
           </ExternalLink>
         </ThemedText>
-        <ThemedText type="default">
-          Get Started
-        </ThemedText>
+        <Link href="/(tabs)/create">
+          <ThemedText type="default">Get Started</ThemedText>
+        </Link>
       </ImageBackground>
     </SafeAreaView>
   );
