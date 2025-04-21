@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     justifyContent: "center",
-    backgroundColor: "#003566",
+    backgroundColor: "#1A3F54",
     alignItems: "center",
     padding: 20,
   },
