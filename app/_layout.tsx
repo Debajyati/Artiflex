@@ -1,7 +1,8 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
+import { Stack, SplashScreen } from 'expo-router';
+// import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
@@ -11,35 +12,53 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+export const unstable_settings = {
+  // Ensure that reloading on `/profile` keeps a back button present.
+  initialRouteName: '(tabs)',
+};
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
+  const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    ...FontAwesome.font,
   });
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded || error) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, error]);
 
   if (!loaded) {
     return null;
   }
+
+  if (error) {
+    throw error;
+  }
+
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
         <Stack.Screen
-          name="index"
-          options={{ title: "Create" }}
+          name="(tabs)"
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="profile"
-          options={{ title: "Profile" }}
-        />
-        <Stack.Screen name="+not-found" />
+          options={{ presentation: 'modal' }}
+          />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
 }
+
+export { ErrorBoundary } from "expo-router";
