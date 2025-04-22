@@ -11,6 +11,7 @@ import type React from "react";
 export default function Index(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
+      <ThemedText type="title">Artiflex</ThemedText>
       <Image
         source={require("@/assets/images/homescreen-background.jpeg")}
         style={{
@@ -18,7 +19,7 @@ export default function Index(): React.JSX.Element {
         }}
       />
       <Link
-        href="/profile"
+        href="./(tabs)/profile"
         asChild
       >
         <Pressable
@@ -29,16 +30,15 @@ export default function Index(): React.JSX.Element {
             position: "absolute",
             top: 0,
             right: 0,
-            margin: 5,
-            padding: 5,
+            margin: 0,
+            padding: 0,
           }}
         >
           <ThemedText style={styles.buttonText}>
-            <FontAwesome6 name="user-large" size={24} color="black" />
+            <FontAwesome6 name="user-large" size={18} color="black" />
           </ThemedText>
         </Pressable>
       </Link>
-      <ThemedText type="title">Artiflex</ThemedText>
       <ThemedText
         type="subtitle"
         style={{
@@ -54,24 +54,25 @@ export default function Index(): React.JSX.Element {
           padding: 10,
         }}
       >
-        Made with{" "}
-      </ThemedText>
-      <Fontisto name="heart" size={24} color="black" />
-      <ThemedText>
+        Made with
+        <Fontisto name="heart" size={24} color="red" />
         ❤️ by
         <ExternalLink href="https://github.com/Debajyati">
           {" "}
           Debajyati Dey
         </ExternalLink>
       </ThemedText>
-      <Link href="/create">
+      <Link href="./(tabs)/create">
         <Pressable style={{
           ...styles.button,
           backgroundColor: "#ffffff",
-          position: "absolute",
-          bottom: 10,
+          padding: 0,
+          margin: 5,
         }}>
-          <ThemedText style={styles.buttonText} type="default">
+          <ThemedText style={{
+            ...styles.buttonText,
+            color: "#0a0a0a",
+          }} type="link">
             Get Started
           </ThemedText>
         </Pressable>
