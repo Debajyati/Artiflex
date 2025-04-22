@@ -19,8 +19,8 @@ export default function Index(): React.JSX.Element {
         }}
       />
       <Link
-        href="./(tabs)/profile"
-        asChild
+        href="/profile"
+        push asChild
       >
         <Pressable
           style={{
@@ -62,7 +62,7 @@ export default function Index(): React.JSX.Element {
           Debajyati Dey
         </ExternalLink>
       </ThemedText>
-      <Link href="./(tabs)/create">
+      <Link href="/create" push asChild>
         <Pressable style={{
           ...styles.button,
           backgroundColor: "#ffffff",
@@ -72,7 +72,7 @@ export default function Index(): React.JSX.Element {
           <ThemedText style={{
             ...styles.buttonText,
             color: "#0a0a0a",
-          }} type="link">
+          }} type="defaultSemiBold">
             Get Started
           </ThemedText>
         </Pressable>
