@@ -13,8 +13,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
-  // Ensure that reloading on `/profile` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: 'index',
 };
 
 export default function RootLayout() {
@@ -47,6 +46,8 @@ export default function RootLayout() {
           fontWeight: 'bold',
         },
       }}>
+        <Stack.Screen
+          name="index" />
         <Stack.Screen
           name="(tabs)"
           options={{ headerShown: false }}
