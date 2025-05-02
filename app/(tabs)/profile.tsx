@@ -15,16 +15,16 @@ export default function Profile(): React.JSX.Element {
         onPress={() => router.back()}
         style={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          margin: 0,
-          padding: 0,
+          top: 5,
+          left: 5,
+          margin: 5,
+          padding: 10,
           borderRadius: 100,
           backgroundColor: "#ffffff",
         }}
       >
         <ThemedText style={styles.buttonText}>
-          <AntDesign name="arrowleft" size={15} color="black" />
+          <AntDesign name="arrowleft" size={20} color="black" />
         </ThemedText>
       </Pressable>
       <ProfileScreen />
