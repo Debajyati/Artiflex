@@ -36,9 +36,12 @@ env.ts
 
 # sensitive files
 google-services.json
+constats/FirebaseConfig.ts
 
 # typescript
 *.tsbuildinfo
 
 app-example
 android
+ios
+
