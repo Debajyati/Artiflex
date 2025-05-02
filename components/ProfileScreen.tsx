@@ -13,7 +13,7 @@ import {
   Button,
   Text,
 } from "react-native";
-import AuthSession from "expo-auth-session";
+import * as AuthSession from "expo-auth-session";
 import { useAuth, useUser, useSSO, SignedIn } from "@clerk/clerk-expo";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -51,11 +51,10 @@ export const useWarmUpBroswer = () => {
 WebBrowser.maybeCompleteAuthSession();
 
 export default function ProfileScreen(): React.JSX.Element {
-  // Clerk hooks for auth state and user info
+  useWarmUpBroswer();
   const { isSignedIn, isLoaded: isAuthLoaded } = useAuth();
   const { user, isLoaded: isUserLoaded } = useUser();
 
-  // State for component logic
   const [loading, setLoading] = useState(true); // Combined loading state
   const [presets, setPresets] = useState<Preset[]>([]);
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
@@ -71,7 +70,7 @@ export default function ProfileScreen(): React.JSX.Element {
       // Start the OAuth flow for Google
       const { createdSessionId, setActive } = await startSSOFlow({
         strategy: "oauth_google",
-        redirectUrl: AuthSession.makeRedirectUri(),
+        redirectUrl: AuthSession.makeRedirectUri({ scheme: "artiflex-app", path: "redirect" }),
       });
 
       if (createdSessionId && setActive) {
