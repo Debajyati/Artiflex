@@ -4,7 +4,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ThemedText from "@/components/ThemedText";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Image, Pressable } from "react-native";
-import Fontisto from "@expo/vector-icons/Fontisto";
 import styles from "./styles";
 import type React from "react";
 
@@ -54,9 +53,7 @@ export default function Index(): React.JSX.Element {
           padding: 10,
         }}
       >
-        Made with
-        <Fontisto name="heart" size={24} color="red" />
-        ❤️ by
+        Made with 💖 by
         <ExternalLink href="https://github.com/Debajyati">
           {" "}
           Debajyati Dey
