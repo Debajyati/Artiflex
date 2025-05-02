@@ -36,7 +36,7 @@ env.ts
 
 # sensitive files
 google-services.json
-constats/FirebaseConfig.ts
+constants/FirebaseConfig.ts
 
 # typescript
 *.tsbuildinfo
