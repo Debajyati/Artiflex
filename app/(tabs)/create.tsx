@@ -10,12 +10,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth, useUser, SignedIn, SignedOut } from "@clerk/clerk-expo";
 import { db } from "@/constants/FirebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
-const { isSignedIn } = useAuth();
-const { user, isLoaded: isUserLoaded } = useUser();
 
 export default function Prompt2Image(): React.JSX.Element {
   const [geminiAPIKey, setGeminiAPIKey] = React.useState("");
+
+  const { isSignedIn } = useAuth();
+  const { user, isLoaded: isUserLoaded } = useUser();
+
   const router = useRouter();
+
   const retriveGeminiAPIKey = async () => {
     if (isSignedIn && user) {
       const userId = user.id; // Use Clerk user ID

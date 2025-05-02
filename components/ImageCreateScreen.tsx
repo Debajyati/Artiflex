@@ -17,12 +17,13 @@ import { GoogleGenAI, Modality } from "@google/genai";
 import DownloadImageButton from "@/components/DownloadImageButton";
 
 export interface ImageCreateScreenProps {
+  //  User Gemini API key
   geminiAPIKey: string;
 }
 
 export default function ImageCreateScreen({
-  geminiAPIKey // User Gemini API key
-}: ImageCreateScreenProps) {
+  geminiAPIKey,
+}: ImageCreateScreenProps): React.JSX.Element {
   type Base64Data = {
     mimeType: string;
     base64URL: string;
