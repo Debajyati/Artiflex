@@ -13,8 +13,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/splash-icon.png",
+        "backgroundColor": "#0a0a0a"
       },
       "package": "com.debajyati.Artiflex"
     },
@@ -32,6 +32,14 @@
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
           "storagePermission": "Allow $(PRODUCT_NAME) to access your device storage",
           "allowBase64": true
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0a0303",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200
         }
       ],
       "expo-font",
