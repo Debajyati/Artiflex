@@ -13,17 +13,6 @@ export default function TabLayout(): React.JSX.Element {
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
       }}
     >
-      {/*
-      <Tabs.Screen
-        name="index"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="home-filled" size={24} color={color} />
-          ),
-          tabBarLabel: "Home",
-        }}
-      />
-      */}
       <Tabs.Screen
         name="create"
         options={{
