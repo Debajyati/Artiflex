@@ -37,6 +37,5 @@ app-example
 android
 
 # files necessary for eas build
-!env.ts
-!google-services.json
-
+!.env
+!constants/FirebaseConfig.ts
