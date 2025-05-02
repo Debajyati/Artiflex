@@ -13,21 +13,29 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
 } from "react-native";
-import gemini from "@/genai/gemini";
+import { GoogleGenAI, Modality } from "@google/genai";
 import DownloadImageButton from "@/components/DownloadImageButton";
 
-export default function ImageCreateScreen() {
+export interface ImageCreateScreenProps {
+  geminiAPIKey: string;
+}
+
+export default function ImageCreateScreen({
+  geminiAPIKey // User Gemini API key
+}: ImageCreateScreenProps) {
   type Base64Data = {
     mimeType: string;
     base64URL: string;
   };
   const [generatedImage, setGeneratedImage] = React.useState("");
   const [base64ImageData, setBase64ImageData] = React.useState(
-    {} as Base64Data,
+    {} as Base64Data
   );
   const [loading, setLoading] = React.useState(false);
   const [prompt, setPrompt] = React.useState("");
   const textRef = React.useRef<TextInput>(null);
+
+  const genai = new GoogleGenAI({ apiKey: geminiAPIKey });
 
   const handleInputChange = (newText: string) => {
     setPrompt(newText);
@@ -37,22 +45,27 @@ export default function ImageCreateScreen() {
     if (!prompt.trim()) {
       Alert.alert(
         "Info",
-        "Please enter a prompt before attempting to generate.",
+        "Please enter a prompt before attempting to generate."
       );
       return;
     }
     setGeneratedImage("");
 
     try {
-      const response = await gemini.googleImageCreationModel.generateContent(prompt);
-      const imagePart =
-        response.response?.candidates?.[0]?.content?.parts?.find(
-          (part) => part.inlineData,
-        );
+      const response = await genai.models.generateContent({
+        model: "gemini-2.0-flash-exp-image-generation",
+        contents: prompt,
+        config: {
+          responseModalities: [Modality.IMAGE, Modality.TEXT],
+        },
+      });
+      const imagePart = response?.candidates?.[0]?.content?.parts?.find(
+        (part) => part.inlineData
+      );
 
       if (imagePart?.inlineData?.data) {
         const base64Image = imagePart.inlineData.data;
-        const base64ImageContentType = imagePart.inlineData.mimeType;
+        const base64ImageContentType = imagePart.inlineData.mimeType as string;
         const base64ImageURL = `data:${base64ImageContentType};base64,${base64Image}`;
         setGeneratedImage(base64ImageURL);
         setBase64ImageData({
@@ -62,14 +75,14 @@ export default function ImageCreateScreen() {
       } else {
         Alert.alert(
           "No image data received",
-          "Make sure your prompt is not illegal or NSFW.",
+          "Make sure your prompt is not illegal or NSFW."
         );
       }
     } catch (error) {
       console.error("Error generating image:", error);
       Alert.alert(
         "Error",
-        "Failed to generate image. Try again after sometime. Make sure you're connected to internet.",
+        "Failed to generate image. Try again after sometime. Make sure you're connected to internet."
       );
     } finally {
       setLoading(false);
