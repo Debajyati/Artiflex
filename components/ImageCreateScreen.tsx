@@ -36,7 +36,15 @@ export default function ImageCreateScreen({
   const [prompt, setPrompt] = React.useState("");
   const textRef = React.useRef<TextInput>(null);
 
-  const genai = new GoogleGenAI({ apiKey: geminiAPIKey });
+  const [genai, setGenai] = React.useState<GoogleGenAI | null>(null);
+
+  React.useEffect(() => {
+      if (geminiAPIKey) {
+        setGenai(new GoogleGenAI({ apiKey: geminiAPIKey }));
+      } else {
+          setGenai(null); // Reset if API key is empty
+      }
+  }, [geminiAPIKey]);
 
   const handleInputChange = (newText: string) => {
     setPrompt(newText);
@@ -47,6 +55,13 @@ export default function ImageCreateScreen({
       Alert.alert(
         "Info",
         "Please enter a prompt before attempting to generate."
+      );
+      return;
+    }
+    if (!genai) {
+      Alert.alert(
+        "Error",
+        "API key not configured. Please go to your profile and ensure you have a valid API key."
       );
       return;
     }
