@@ -39,16 +39,12 @@ export default function Prompt2Image(): React.JSX.Element {
                 ToastAndroid.LONG
               );
             }, 1000);
-            setTimeout(() => {
-              router.push("/profile");
-            }, 2500);
           }
         } else {
           ToastAndroid.show(
             "Must sign in and create an API key to use the app.",
-            ToastAndroid.SHORT
+            ToastAndroid.LONG
           );
-          router.push("/profile");
         }
       } catch (error) {
         console.error("Error fetching user data or presets:", error);
@@ -68,7 +64,7 @@ export default function Prompt2Image(): React.JSX.Element {
       {/* View for signed in users */}
       <SignedIn>
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => router.dismissTo("/")}
           style={{
             position: "absolute",
             top: 5,
