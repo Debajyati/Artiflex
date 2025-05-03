@@ -20,6 +20,7 @@ export default function Prompt2Image(): React.JSX.Element {
   const router = useRouter();
 
   const retriveGeminiAPIKey = async () => {
+    if (!isUserLoaded) return;
     if (isSignedIn && user) {
       const userId = user.id; // Use Clerk user ID
 
@@ -29,18 +30,18 @@ export default function Prompt2Image(): React.JSX.Element {
         if (userDoc.exists()) {
           const userData = userDoc.data() as UserData;
           if (userData.apiKey) {
-            setGeminiAPIKey(userData.apiKey || ""); // Set existing key if present
+            setGeminiAPIKey(userData.apiKey); // Set existing key if present
           } else {
             ToastAndroid.show("No API key found.", ToastAndroid.SHORT);
             setTimeout(() => {
               ToastAndroid.show(
                 "Must sign in and create an API key to use the app.",
-                ToastAndroid.SHORT
+                ToastAndroid.LONG
               );
             }, 1000);
             setTimeout(() => {
               router.push("/profile");
-            }, 1500);
+            }, 2500);
           }
         } else {
           ToastAndroid.show(
@@ -55,7 +56,7 @@ export default function Prompt2Image(): React.JSX.Element {
       }
     } else {
       ToastAndroid.show("Unauthenticated user!", ToastAndroid.SHORT);
-      ToastAndroid.show("Must sign in to use the app.", ToastAndroid.SHORT);
+      ToastAndroid.show("Must sign in to use the app.", ToastAndroid.LONG);
       router.push("/profile");
     }
   };
@@ -70,16 +71,16 @@ export default function Prompt2Image(): React.JSX.Element {
           onPress={() => router.back()}
           style={{
             position: "absolute",
-            top: 0,
-            left: 0,
-            margin: 0,
-            padding: 0,
+            top: 5,
+            left: 5,
+            margin: 5,
+            padding: 10,
             borderRadius: 100,
             backgroundColor: "#ffffff",
           }}
         >
           <ThemedText style={styles.buttonText}>
-            <AntDesign name="arrowleft" size={15} color="black" />
+            <AntDesign name="arrowleft" size={20} color="black" />
           </ThemedText>
         </Pressable>
         <ImageCreateScreen geminiAPIKey={geminiAPIKey} />
@@ -100,11 +101,12 @@ export default function Prompt2Image(): React.JSX.Element {
           style={{
             margin: 5,
             padding: 5,
-            borderRadius: 10,
+            borderRadius: 8,
+            elevation: 4,
             backgroundColor: "#ffffff",
           }}
         >
-          <ThemedText type="link" style={styles.buttonText}>
+          <ThemedText type="link" style={{...styles.buttonText, color: "#0a0a0a"}}>
             Sign In/ Sign Up
           </ThemedText>
         </Pressable>
