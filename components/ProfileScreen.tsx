@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  View,
   Image,
   KeyboardAvoidingView,
-  TouchableOpacity,
+  Pressable,
   TextInput,
   ScrollView,
   Alert,
@@ -11,7 +10,6 @@ import {
   ActivityIndicator,
   StyleSheet,
   Button,
-  Text,
 } from "react-native";
 import * as AuthSession from "expo-auth-session";
 import { useAuth, useUser, useSSO, SignedIn } from "@clerk/clerk-expo";
@@ -26,6 +24,7 @@ import ThemedText from "@/components/ThemedText";
 import ThemedView from "@/components/ThemedView";
 import ExternalLink from "@/components/ExternalLink";
 import SignOutButton from "@/components/SignOutButton";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Structure for your presets in Firestore
 export interface Preset {
@@ -40,12 +39,12 @@ export interface UserData {
 }
 
 export const useWarmUpBroswer = () => {
-  useEffect(()=>{
+  useEffect(() => {
     void WebBrowser.warmUpAsync();
     return () => {
       void WebBrowser.coolDownAsync();
     };
-  },[]);
+  }, []);
 }
 
 WebBrowser.maybeCompleteAuthSession();
@@ -248,10 +247,10 @@ export default function ProfileScreen(): React.JSX.Element {
         <ThemedText style={styles.subText}>
           Please sign in with Google to use the app.
         </ThemedText>
-        <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
+        <Pressable style={styles.googleButton} onPress={handleGoogleSignIn}>
           <FontAwesome5 name="google" size={20} color="#fff" style={{ marginRight: 10 }} />
-          <Text style={styles.googleButtonText}>Sign in with Google</Text>
-        </TouchableOpacity>
+          <ThemedText style={styles.googleButtonText}>Sign in with Google</ThemedText>
+        </Pressable>
       </ThemedView>
     );
   }
@@ -259,60 +258,62 @@ export default function ProfileScreen(): React.JSX.Element {
   // Render API Key input screen if needed
   if (showApiKeyInput) {
     return (
-      <ThemedView style={[styles.container, styles.centerContent, styles.apiKeyInputContainer]}>
-        <ThemedText style={styles.subText}>
-          Click the link below to create or find your Gemini API key.
-        </ThemedText>
-        <ExternalLink href="https://aistudio.google.com/apikey">
-          <ThemedText style={styles.linkText}>Get API Key from Google AI Studio</ThemedText>
-        </ExternalLink>
-        <ThemedText style={[styles.subText, { marginTop: 15, marginBottom: 5 }]}>
-          Paste the key here:
-        </ThemedText>
-        <TextInput
-          ref={textRef}
-          style={styles.apiKeyTextInput}
-          value={apiKey}
-          onChangeText={setApiKey}
-          placeholder="Enter your API Key"
-          placeholderTextColor="#888fff"
-          multiline={false} // Usually API keys are single line
-          secureTextEntry={true} // Hide the API key
-        />
-        <Button
-          title="Save API Key"
-          onPress={handleSaveApiKey}
-          disabled={!apiKey || loading} // Disable if no key or loading
-          color="#007AFF"
-        />
-         <TouchableOpacity onPress={() => setShowApiKeyInput(false)} style={{marginTop: 15}}>
-             <Text style={styles.cancelText}>Cancel</Text>
-         </TouchableOpacity>
-      </ThemedView>
+      <SafeAreaView style={{ ...styles.container, justifyContent: 'flex-start', alignContent: 'flex-start', alignItems: 'center' }}>
+        <ThemedView style={[styles.container, styles.centerContent, styles.apiKeyInputContainer]}>
+          <ThemedText type="title" style={styles.subText}>
+            Click the link below to create your new Gemini API key.
+          </ThemedText>
+          <ExternalLink href="https://aistudio.google.com/apikey">
+            <ThemedText type="link" style={styles.linkText}>Get API Key from Google AI Studio</ThemedText>
+          </ExternalLink>
+          <ThemedText type="defaultSemiBold" style={[styles.subText, { marginTop: 15, marginBottom: 5 }]}>
+            Paste the key here:
+          </ThemedText>
+          <TextInput
+            ref={textRef}
+            style={styles.apiKeyTextInput}
+            value={apiKey}
+            onChangeText={setApiKey}
+            placeholder="Enter your API Key"
+            placeholderTextColor="#888fff"
+            multiline={false} // Usually API keys are single line
+            secureTextEntry={true} // Hide the API key
+          />
+          <Button
+            title="Save API Key"
+            onPress={handleSaveApiKey}
+            disabled={!apiKey || loading} // Disable if no key or loading
+            color="#007AFF"
+          />
+          <Pressable onPress={() => setShowApiKeyInput(false)} style={{...styles.deletePresetButton, marginTop: 15 }}>
+            <ThemedText style={styles.cancelText}>Cancel</ThemedText>
+          </Pressable>
+        </ThemedView>
+      </SafeAreaView>
     );
   }
 
   // Render Profile screen for logged-in user
   // Ensure user object is available (it should be if isSignedIn is true)
   if (!user) {
-     // This case should ideally not be reached if logic is correct
-     return (
-         <ThemedView style={[styles.container, styles.centerContent]}>
-             <ThemedText>Error: User data not available.</ThemedText>
-         </ThemedView>
-     );
+    // This case should ideally not be reached if logic is correct
+    return (
+      <ThemedView style={[styles.container, styles.centerContent]}>
+        <ThemedText>Error: User data not available.</ThemedText>
+      </ThemedView>
+    );
   }
 
   return (
-    <ScrollView style={styles.scrollView}>
+    <ScrollView style={styles.container}>
       <ThemedView style={styles.profileContainer}>
         <KeyboardAvoidingView behavior="padding" style={{ width: '100%', alignItems: 'center' }}>
           {/* Profile Image */}
           <Image
-             source={{ uri: user.imageUrl || undefined }} // Use Clerk's imageUrl
-             defaultSource={require("@/assets/images/avatar.jpg")} // Provide a local fallback
-             style={styles.profileImage}
-             onError={(e) => console.log("Failed to load profile image:", e.nativeEvent.error)}
+            source={{ uri: user.imageUrl || undefined }} // Use Clerk's imageUrl
+            defaultSource={require("@/assets/images/avatar.jpg")} // Provide a local fallback
+            style={styles.profileImage}
+            onError={(e) => console.log("Failed to load profile image:", e.nativeEvent.error)}
           />
 
           {/* Display Name (from Clerk, not editable here) */}
@@ -327,38 +328,38 @@ export default function ProfileScreen(): React.JSX.Element {
 
           {/* API Key Section */}
           {!hasApiKey && (
-            <View style={styles.apiKeySection}>
+            <ThemedView style={styles.apiKeySection}>
               <ThemedText style={styles.warningText}>
                 Gemini API Key is missing. You need it to use the app's core features.
               </ThemedText>
-              <TouchableOpacity
+              <Pressable
                 style={styles.apiKeyButton}
                 onPress={() => setShowApiKeyInput(true)}
               >
                 <ThemedText style={styles.buttonText}>Add Gemini API Key</ThemedText>
-              </TouchableOpacity>
-            </View>
+              </Pressable>
+            </ThemedView>
           )}
           {hasApiKey && (
-             <View style={styles.apiKeySection}>
-                 <ThemedText style={styles.successText}>
-                    Gemini API Key is configured.
-                 </ThemedText>
-                 <TouchableOpacity
-                    style={[styles.apiKeyButton, styles.editApiKeyButton]}
-                    onPress={() => setShowApiKeyInput(true)} // Allow editing
-                 >
-                    <ThemedText style={styles.buttonText}>Edit API Key</ThemedText>
-                 </TouchableOpacity>
-             </View>
+            <ThemedView style={styles.apiKeySection}>
+              <ThemedText style={styles.successText}>
+                Gemini API Key is configured.
+              </ThemedText>
+              <Pressable
+                style={[styles.apiKeyButton, styles.editApiKeyButton]}
+                onPress={() => setShowApiKeyInput(true)} // Allow editing
+              >
+                <ThemedText style={styles.buttonText}>Edit API Key</ThemedText>
+              </Pressable>
+            </ThemedView>
           )}
 
 
           {/* Presets Section */}
-          <View style={styles.presetsContainer}>
+          <ThemedView style={styles.presetsContainer}>
             <ThemedText style={styles.sectionTitle}>Your Image Presets</ThemedText>
             {presets.map((preset, index) => (
-              <View key={index} style={styles.presetItem}>
+              <ThemedView key={index} style={styles.presetItem}>
                 <Image
                   source={{ uri: `data:image/${preset.fileExtension};base64,${preset.image}` }}
                   style={styles.presetImage}
@@ -376,7 +377,7 @@ export default function ProfileScreen(): React.JSX.Element {
                   placeholderTextColor="#888fff"
                 />
                 {/* Optional: Add a delete button per preset */}
-                <TouchableOpacity onPress={() => {
+                <Pressable onPress={() => {
                   const newPresets = presets.filter((_, i) => i !== index);
                   setPresets(newPresets);
                   ToastAndroid.show("Preset deleted", ToastAndroid.SHORT);
@@ -385,32 +386,32 @@ export default function ProfileScreen(): React.JSX.Element {
                   }, 900);
                 }} style={styles.deletePresetButton}>
                   <FontAwesome5 name="trash-alt" size={18} color="#0a0a0a" />
-                </TouchableOpacity>
-              </View>
+                </Pressable>
+              </ThemedView>
             ))}
 
             {/* Add Preset Button */}
             {presets.length < 2 && (
-              <TouchableOpacity
+              <Pressable
                 style={styles.addPresetButton}
                 onPress={handleAddPreset}
               >
                 <FontAwesome5 name="plus" size={24} color="#007AFF" />
-                <ThemedText style={{marginTop: 5, color: "#007AFF"}}>Add Preset</ThemedText>
-              </TouchableOpacity>
+                <ThemedText style={{ marginTop: 5, color: "#007AFF" }}>Add Preset</ThemedText>
+              </Pressable>
             )}
 
             {/* Save Presets Button */}
             {presets.length > 0 && (
-              <TouchableOpacity
+              <Pressable
                 style={styles.savePresetsButton}
                 onPress={handleSavePresets}
                 disabled={loading}
               >
                 <ThemedText style={styles.buttonText}>Save Presets</ThemedText>
-              </TouchableOpacity>
+              </Pressable>
             )}
-          </View>
+          </ThemedView>
           {/* Sign Out Button */}
           <SignedIn>
             <SignOutButton />
@@ -423,12 +424,11 @@ export default function ProfileScreen(): React.JSX.Element {
 
 // --- Styles ---
 const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    // Removed alignItems and justifyContent to allow scrolling content
+    flexGrow: 1,
+    backgroundColor: "#1A3F54",
+    padding: 20,
   },
   centerContent: {
     justifyContent: "center", // Center content vertically
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   apiKeyInputContainer: {
-     padding: 30,
+    padding: 30,
   },
   profileContainer: {
     alignItems: "center",
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
   profileImage: {
     width: 120, // Slightly smaller
     height: 120,
-    borderRadius: 60, // Keep it circular
+    borderRadius: 100, // Keep it circular
     marginBottom: 15,
     backgroundColor: '#e0e0e0', // Placeholder background
   },
@@ -482,16 +482,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#fff', // Ensure input background
   },
-   apiKeyTextInput: {
-      width: "90%",
-      height: 45,
-      borderWidth: 1,
-      borderColor: "#ccc",
-      borderRadius: 8,
-      paddingHorizontal: 15,
-      marginBottom: 15,
-      backgroundColor: '#fff',
-   },
+  apiKeyTextInput: {
+    height: 45,
+    backgroundColor: "white",
+    borderWidth: 3,
+    borderRadius: 5,
+    borderColor: "#0faffa",
+    padding: 20,
+    paddingVertical: 0,
+  },
   // Button Styles
   googleButton: {
     flexDirection: 'row',
@@ -508,18 +507,18 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
   },
   googleButtonText: {
-      color: "#fff",
-      fontSize: 16,
-      fontWeight: '500',
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: '500',
   },
   apiKeySection: {
-      width: '90%',
-      marginTop: 20,
-      marginBottom: 15,
-      padding: 15,
-      borderRadius: 8,
-      backgroundColor: '#f0f0f0', // Light background for the section
-      alignItems: 'center',
+    width: '90%',
+    marginTop: 20,
+    marginBottom: 15,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0', // Light background for the section
+    alignItems: 'center',
   },
   apiKeyButton: {
     backgroundColor: "#E67E22", // Orange color for warning/action
@@ -529,36 +528,36 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
   },
-   editApiKeyButton: {
-      backgroundColor: "#3498DB", // Blue for edit action
-   },
+  editApiKeyButton: {
+    backgroundColor: "#3498DB", // Blue for edit action
+  },
   buttonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: '500',
   },
   warningText: {
-      color: '#D35400', // Darker orange for warning
-      fontSize: 14,
-      textAlign: 'center',
-      marginBottom: 10,
+    color: '#D35400', // Darker orange for warning
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 10,
   },
-   successText: {
-      color: '#27AE60', // Green for success
-      fontSize: 14,
-      textAlign: 'center',
-      marginBottom: 5,
-   },
-   linkText: {
-       color: '#007AFF',
-       fontSize: 16,
-       marginVertical: 10,
-       textDecorationLine: 'underline',
-   },
-   cancelText: {
-       color: '#888',
-       fontSize: 14,
-   },
+  successText: {
+    color: '#27AE60', // Green for success
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  linkText: {
+    color: '#007AFF',
+    fontSize: 16,
+    marginVertical: 10,
+    textDecorationLine: 'underline',
+  },
+  cancelText: {
+    color: '#888',
+    fontSize: 14,
+  },
   // Presets Styles
   presetsContainer: {
     width: "100%",
@@ -603,9 +602,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   deletePresetButton: {
-      paddingLeft: 10, // Space before the icon
-      paddingRight: 5,
-      backgroundColor: '#FF3B30',
+    paddingLeft: 10, // Space before the icon
+    paddingRight: 5,
+    backgroundColor: '#FF3B30',
   },
   addPresetButton: {
     // width: '100%', // Make button wider
