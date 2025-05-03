@@ -12,7 +12,7 @@ export default function Profile(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <Pressable
-        onPress={() => router.back()}
+        onPress={() => router.dismissTo("/")}
         style={{
           position: "absolute",
           top: 5,
