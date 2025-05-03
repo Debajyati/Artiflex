@@ -16,10 +16,11 @@ export default function TabLayout(): React.JSX.Element {
       <Tabs.Screen
         name="create"
         options={{
+          headerTitle: "Text2Image",
+          headerTitleAlign: "center",
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="image" size={24} color={color} />
           ),
-          tabBarLabel: "Text2Image",
         }}
       />
       <Tabs.Screen
@@ -28,7 +29,8 @@ export default function TabLayout(): React.JSX.Element {
           tabBarIcon: ({ color }) => (
             <FontAwesome6 name="user-large" size={24} color={color} />
           ),
-          tabBarLabel: "Profile",
+          headerTitle: "Profile",
+          headerTitleAlign: "center",
         }}
       />
     </Tabs>
