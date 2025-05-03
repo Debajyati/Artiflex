@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ThemedText from "@/components/ThemedText";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Image, Pressable } from "react-native";
-import styles from "./styles";
+import styles from "@/app/styles";
 import type React from "react";
 
 export default function Index(): React.JSX.Element {
@@ -27,9 +27,9 @@ export default function Index(): React.JSX.Element {
             borderRadius: 100,
             backgroundColor: "#ffffff",
             position: "absolute",
-            top: 0,
-            right: 0,
-            margin: 0,
+            top: 40,
+            right: 10,
+            margin: 15,
             padding: 0,
           }}
         >
